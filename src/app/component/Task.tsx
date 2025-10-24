@@ -2,18 +2,35 @@
 "use client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Modal, { type ModalHandle } from "./Modal";
 import { FaRegEdit } from "react-icons/fa"; 
 import { FaTrashAlt } from "react-icons/fa";
 import { ITask } from "../../../types/tasks";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
+import {
+  AlertDialog, AlertDialogTrigger, AlertDialogContent,
+  AlertDialogHeader, AlertDialogTitle, AlertDialogFooter,
+  AlertDialogCancel, AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 const API_BASE = "http://localhost:3001";
 
 export default function TaskRow({ task }: { task: ITask }) {
   const router = useRouter();
 
-  const editRef = useRef<ModalHandle>(null);
-  const delRef  = useRef<ModalHandle>(null);
+const [editOpen, setEditOpen] = useState(false);
+const [delOpen,  setDelOpen]  = useState(false);
+
 
   const [value, setValue] = useState(task.text);
 
@@ -25,55 +42,63 @@ export default function TaskRow({ task }: { task: ITask }) {
       body: JSON.stringify({ text: value }),
     });
     if (!res.ok) return alert("Update failed");
-    editRef.current?.close();
+    setEditOpen(false);
     router.refresh();
   }
 
   async function confirmDelete() {
     const res = await fetch(`${API_BASE}/tasks/${task.id}`, { method: "DELETE" });
     if (!res.ok) return alert("Delete failed");
-    delRef.current?.close();
+    setDelOpen(false);
     router.refresh();
   }
 
   return (
     <tr>
       <td className="w-full">{task.text}</td>
-      <td className="flex items-center gap-4">
-        <button className="text-blue-500" onClick={() => editRef.current?.open()}>
-          <FaRegEdit size={22} />
-        </button>
-        <button className="text-red-500" onClick={() => delRef.current?.open()}>
-          <FaTrashAlt size={22} />
-        </button>
-      </td>
+      <td className="flex items-center gap-4"></td>
 
-      {/* 编辑弹窗 */}
-      <Modal ref={editRef} title="Edit task">
-        <form onSubmit={saveEdit}>
-          <input
-            className="input input-bordered w-full my-4"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            autoFocus
-          />
-          <div className="modal-action">
-            <button type="submit" className="btn btn-primary">Save</button>
-            <button type="button" className="btn" onClick={() => editRef.current?.close()}>
-              Cancel
-            </button>
-          </div>
-        </form>
-      </Modal>
+      {/* edit */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogTrigger asChild>
+          <Button className="w-full" variant="outline" size="sm">Edit</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit task</DialogTitle>
+          </DialogHeader>
 
-      {/* 删除确认弹窗 */}
-      <Modal ref={delRef} title="Delete task?">
-        <p className="py-4">Are you sure you want to delete “{task.text}”?</p>
-        <div className="modal-action">
-          <button className="btn btn-error" onClick={confirmDelete}>Delete</button>
-          <button className="btn" onClick={() => delRef.current?.close()}>Cancel</button>
-        </div>
-      </Modal>
+          <form onSubmit={saveEdit} className="space-y-4">
+            <Input
+              value={value}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
+            />
+            <DialogFooter className="gap-2">
+              <Button type="button" variant="ghost" onClick={() => setEditOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">Save</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+
+      {/* delete  */}
+      <AlertDialog open={delOpen} onOpenChange={setDelOpen}>
+        <AlertDialogTrigger asChild>
+          <Button className="w-full" variant="destructive" size="sm">Delete</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this task?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </tr>
   );
 }

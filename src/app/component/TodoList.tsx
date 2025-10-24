@@ -9,12 +9,16 @@ interface TodoListProps{
 const TodoList:React.FC<TodoListProps> = ({tasks}) => {
   return (
     <div className="overflow-x-auto">
-  <table className="table">
+    <table className="w-full table-fixed">
+      <colgroup>
+        <col />                 
+        <col className="w-72" />
+      </colgroup>
     {/* head */}
     <thead>
       <tr>
-        <th>Tasks</th>
-        <th>Actions</th>
+        <th className='text-left'>Tasks</th>
+        <th className='text-right'>Actions</th>
       </tr>
     </thead>
     <tbody>

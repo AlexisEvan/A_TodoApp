@@ -1,20 +1,8 @@
 import { getAllTodos } from "../../api"
-import AddTask from "./component/AddTask"
-import TodoList from "./component/TodoList"
-import { Button } from "@/components/ui/button"
-
+import StoreHydrator from "./store-hydrator";
+import type { Task } from "../store/userTasks";
 
 export default async function Home() {
-  const tasks = await getAllTodos();
-  console.log(tasks);
-  return (
-   <main className="max-w-4xl mx-auto">
-    <div className="text-center my-5 flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Todo list App</h1>    
-      <AddTask />   
-    </div>
-    <TodoList tasks = {tasks}/>
-  
-   </main>
-  )
+  const tasks = (await getAllTodos()) as Task[]; 
+  return <StoreHydrator tasks={tasks} />;   
 }
