@@ -10,17 +10,18 @@ const TodoList:React.FC<TodoListProps> = ({tasks}) => {
   return (
     <div className="overflow-x-auto">
     <table className="w-full table-fixed">
-      <colgroup>
-        <col />                 
-        <col className="w-72" />
-      </colgroup>
+    <colgroup>
+      <col />                     
+      <col className="w-[220px]" /> 
+    </colgroup>
+
     {/* head */}
     <thead>
-      <tr>
-        <th className='text-left'>Tasks</th>
-        <th className='text-right'>Actions</th>
-      </tr>
-    </thead>
+      <tr className="align-middle"> 
+      <th className="text-left pl-4">Tasks</th>
+    <th className="text-right pr-20">Actions</th>
+  </tr>
+</thead>
     <tbody>
     {tasks.map((task) =>(
         <Task key={task.id} task={task} />

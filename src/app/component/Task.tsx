@@ -54,19 +54,22 @@ const [delOpen,  setDelOpen]  = useState(false);
   }
 
   return (
-    <tr>
-      <td className="w-full">{task.text}</td>
-      <td className="flex items-center gap-4"></td>
+    <tr className="align-middle">
+    {/* text */}
+    <td className="p-4">{task.text}</td>
 
-      {/* edit */}
-      <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogTrigger asChild>
-          <Button className="w-full" variant="outline" size="sm">Edit</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit task</DialogTitle>
-          </DialogHeader>
+    {/* Actions */}
+    <td className="p-4 pr-2">      
+      <div className="flex items-center gap-2">
+        {/* Edit */}
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">Edit</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit task</DialogTitle>
+            </DialogHeader>
 
           <form onSubmit={saveEdit} className="space-y-4">
             <Input
@@ -87,7 +90,9 @@ const [delOpen,  setDelOpen]  = useState(false);
       {/* delete  */}
       <AlertDialog open={delOpen} onOpenChange={setDelOpen}>
         <AlertDialogTrigger asChild>
-          <Button className="w-full" variant="destructive" size="sm">Delete</Button>
+            <div>
+              <Button variant="destructive" size="sm">Delete</Button>
+            </div>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -99,6 +104,8 @@ const [delOpen,  setDelOpen]  = useState(false);
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
+      </td>
     </tr>
   );
 }
