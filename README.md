@@ -37,7 +37,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ![mainpage](./docs/screenshots/homepage.png)
 
-![edit](./docs/screenshots/Edit.png)
+![edit](./docs/screenshots/edit.png)
 
 ![add](./docs/screenshots/addtask.png)
 
