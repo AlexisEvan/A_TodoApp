@@ -1,11 +1,8 @@
 
 "use client";
-import { useRef, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogTrigger,
@@ -14,69 +11,51 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const API_BASE = "http://localhost:3001";
-const id = uuidv4();
+
+type FormValues = {
+  text: string;
+};
+
 export default function AddTask() {
- 
-  const formRef = useRef<HTMLFormElement>(null);      
   const router = useRouter();
+  const { register, handleSubmit, reset } = useForm<FormValues>();
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const form = formRef.current;                      
-    if (!form) return;
-
-    const text = (new FormData(form).get("text") as string)?.trim();
-    if (!text) return;
-
+  const onSubmit = async (data: FormValues) => {
     const id = uuidv4();
-
     const res = await fetch(`${API_BASE}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, text, completed: false }),
+      body: JSON.stringify({ id, text: data.text, completed: false }),
     });
-    if (!res.ok) { alert("Add failed"); return; }
-
-    form.reset();                                      
+    if (!res.ok) {
+      alert("Add failed");
+      return;
+    }
+    reset(); // clean
     router.refresh();
-  }
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      {/* remove btn */}
+    <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full" onClick={() => setOpen(true)}>
-          Add New Task
-        </Button>
+        <Button className="w-full">Add New Task</Button>
       </DialogTrigger>
 
-      {/* pop up window */}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add task</DialogTitle>
         </DialogHeader>
 
-        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-          {/* input box */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            name="text"
             placeholder="Task title..."
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            required
+            {...register("text", { required: true })}
           />
-          
-          {/* cancel */}
           <DialogFooter className="sm:justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
             <Button type="submit">Add</Button>
           </DialogFooter>
         </form>

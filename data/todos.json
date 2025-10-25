@@ -1,10 +1,6 @@
 {
   "tasks": [
     {
-      "id": "2",
-      "text": "go to swim"
-    },
-    {
       "id": "5786",
       "text": "go to gym",
       "completed": false
