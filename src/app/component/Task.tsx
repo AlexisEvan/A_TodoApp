@@ -1,9 +1,7 @@
-// src/app/component/Task.tsx
+
 "use client";
-import { useRef, useState } from "react";
+import { useState,FormEvent} from "react";
 import { useRouter } from "next/navigation";
-import { FaRegEdit } from "react-icons/fa"; 
-import { FaTrashAlt } from "react-icons/fa";
 import { ITask } from "../../../types/tasks";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +21,8 @@ import {
   AlertDialogCancel, AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
+import { updateTask, deleteTask } from "@/services/todoservices";
+
 const API_BASE = "http://localhost:3001";
 
 export default function TaskRow({ task }: { task: ITask }) {
@@ -31,27 +31,28 @@ export default function TaskRow({ task }: { task: ITask }) {
 const [editOpen, setEditOpen] = useState(false);
 const [delOpen,  setDelOpen]  = useState(false);
 
+const [value, setValue] = useState(task.text);
 
-  const [value, setValue] = useState(task.text);
-
-  async function saveEdit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const res = await fetch(`${API_BASE}/tasks/${task.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: value }),
-    });
-    if (!res.ok) return alert("Update failed");
+  async function saveEdit(e: FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  try {
+    await updateTask(task.id, {text:value});      
     setEditOpen(false);
     router.refresh();
+  } catch {
+    alert("Update failed");
   }
+}
 
-  async function confirmDelete() {
-    const res = await fetch(`${API_BASE}/tasks/${task.id}`, { method: "DELETE" });
-    if (!res.ok) return alert("Delete failed");
+async function confirmDelete() {
+  try {
+    await deleteTask(task.id);           
     setDelOpen(false);
     router.refresh();
+  } catch {
+    alert("Delete failed");
   }
+}
 
   return (
     <tr className="align-middle">

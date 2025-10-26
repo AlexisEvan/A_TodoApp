@@ -1,5 +1,5 @@
 import { getAllTodos } from "../../api"
-import StoreHydrator from "./store-hydrator";
+import StoreHydrator from "./TasksInitializer";
 import type { Task } from "../store/userTasks";
 
 export default async function Home() {

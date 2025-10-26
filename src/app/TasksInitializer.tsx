@@ -1,4 +1,3 @@
-// src/app/store-hydrator.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -6,7 +5,7 @@ import { useTasks, type Task } from "../store/userTasks";
 import AddTask from "./component/AddTask";
 import TodoList from "./component/TodoList";
 
-export default function StoreHydrator({ tasks }: { tasks: Task[] }) {
+export default function TasksInitializer({ tasks }: { tasks: Task[] }) {
   const setInitial = useTasks(s => s.setInitial);
 
   useEffect(() => {
