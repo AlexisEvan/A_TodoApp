@@ -33,7 +33,6 @@ export async function addTask(text: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id, text, completed: false }),
   });
-
   if (!res.ok) throw new Error("Add failed");
   return res.json();
 }
